@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dragon: Web Components Demo</title>
+		<style>
+			body {
+				padding: 20px;
+			}
+			code {
+				background-color: rgba(29, 28, 29, 0.04);
+				color: #e01e5a;
+				font-family: Consolas, monospace;
+			}
+			.indent {
+				margin-left: 20px;
+			}
+		</style>
+	</head>
+	<body>
+
+		<h1>Dragon: Web Components Demo</h1>
+		<p>
+			This page demonstrates how Dragon is unable to recognize content
+			inside a web component's shadow root.
+		</p>
+		<p>
+			<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web Components</a>
+			are a web standard which allow you to create reusable custom elements (i.e. custom tags),
+			and they use a standard called
+			<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM">Shadow DOM</a>
+			for encapsulation of the DOM/CSS/events from interference from the rest of the page.
+		</p>
+		
+		<h2>Native Elements</h2>
+		<p>
+			This section uses native HTML <code>&lt;a&gt;</code>, <code>&lt;button&gt;</code> and <code>&lt;input type="text"&gt;</code> elements.
+		</p>
+		<p>
+			<strong>These work as expected with Dragon.</strong>
+		</p>
+		<p class="indent">
+			Link: <a href="https://www.nuance.com/dragon.html">Native Link</a>
+		</p>
+		<p class="indent">
+			Button: <button>Native Button</button>
+		</p>
+		<p class="indent">
+			<label>
+				Text Input: <input type="text" value="native text input">
+			</label>
+		</p>
+
+		<h2>Custom Elements</h2>
+		<p>
+			This section uses custom elements (web components) which are defined in a <code>&lt;script&gt;</code>
+			block at the bottom of the page. Internally, each web component renders the same native <code>&lt;a&gt;</code>,
+			<code>&lt;button&gt;</code> and <code>&lt;input type="text"&gt;</code> elements.
+		</p>
+		<p>
+			<strong>These do NOT work with Dragon</strong>. Our theory is that Dragon is not looking into an
+			element's <code>#shadow-root</code> when discovering elements a user may want to interact with.
+		</p>
+		<p class="indent">
+			<custom-link></custom-link>
+		</p>
+		<p class="indent">
+			<custom-button></custom-button>
+		</p>
+		<p class="indent">
+			<custom-input></custom-input>
+		</p>
+		<script type="module" >
+			class CustomLink extends HTMLElement {
+
+				constructor() {
+					super();
+					let tmpl = document.createElement('template');
+					tmpl.innerHTML = 'Link: <a href="https://www.nuance.com/dragon.html">Link in a Custom Element</a>';
+					let shadowRoot = this.attachShadow({ mode: 'open' });
+					shadowRoot.appendChild(tmpl.content.cloneNode(true));
+				}
+
+			}
+			customElements.define('custom-link', CustomLink);
+
+			class CustomButton extends HTMLElement {
+
+				constructor() {
+					super();
+					let tmpl = document.createElement('template');
+					tmpl.innerHTML = 'Button: <button>Button in a Custom Element</button>';
+					let shadowRoot = this.attachShadow({ mode: 'open' });
+					shadowRoot.appendChild(tmpl.content.cloneNode(true));
+				}
+
+			}
+			customElements.define('custom-button', CustomButton);
+
+			class CustomInput extends HTMLElement {
+
+				constructor() {
+					super();
+					let tmpl = document.createElement('template');
+					tmpl.innerHTML = '<label>Text Input: <input type="text" value="text input in a custom element"></label>';
+					let shadowRoot = this.attachShadow({ mode: 'open' });
+					shadowRoot.appendChild(tmpl.content.cloneNode(true));
+				}
+
+			}
+			customElements.define('custom-input', CustomInput);
+		</script>
+	</body>
+</html>
